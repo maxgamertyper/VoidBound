@@ -1,0 +1,22 @@
+	Score|Player Name|Vehicle Name
+	47|Sample Player|Sample Vehicle
+	21|Dumb Player|Dumb Vehicle
+	81|Smart Player|Smart Vehicle
+	1|OverflowPlayerNameExample|Example Vehicle
+	12|Player Example|OverflowVehicleNameExample
+	12000|Overflow Score|Example
+	29000|Overflow Score|Example 2
+	2900|Quad Digit Score|Example
+	290|Trip Digit Score|Example
+	0|Tenth|Rank Example
+	0|Second Page|Testing Example1|MAX|ARES XI
+1|MAX|ARES X!!
+2|MAX|ARES XIII
+0|ASTRO|DUMB PEOPLE
+0|ASTRO|DUMB PEOPLE
+2|JOHN CENA|JOHN CENA
+1|idiots|USS DUMB PEOPLE
+0|AMONG US|IMPOSTER
+5|Jimbo the Jim Jim Mc|JIMBOMOBILE
+9|GregTech|New Horizons
+1|Testing|DeathOS43

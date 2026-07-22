@@ -1,0 +1,2 @@
+newEvents.txt
+leaderboard.txt

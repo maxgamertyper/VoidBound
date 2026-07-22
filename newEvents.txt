@@ -1,0 +1,768 @@
+Warning, these events are AI generated based on a sample event I had made due to time constraints. However, none of the code written is AI generated and is written by me
+[EVENT]
+isUltimatum: false
+relationshipUltimatum: false
+NPC: Carrie {Aeronautics Engineer}
+header: MICROFRACTURES
+dialogue: Commander, I found tiny cracks forming along the outer hull. We can reinforce them before they spread.
+prompt: Reinforce the hull?
+[ACCEPT_EFFECTS]
+resources: 0,0,0,-4.2
+relationships: 3,0,0,0
+response: The hull is secure. That should prevent future leaks.
+[DENY_EFFECTS]
+resources: -2.7,0,0,0
+relationships: -3,0,0,0
+response: A crack opened during flight and some oxygen escaped.
+[COUNTER_OFFER]
+resources: -0.8,0,0,-2.1
+resourceModifier: 0.6,0,0,1.4
+relationships: -1,0,0,0
+relationshipModifier: 2,0,0,0
+neutralResponse: I reinforced the weakest sections.
+badResponse: I warned you this wouldn't be enough.
+goodResponse: Nice compromise. We fixed the dangerous spots without wasting materials.
+[END]
+
+[EVENT]
+isUltimatum: false
+relationshipUltimatum: false
+NPC: Malik {Military Pilot}
+header: SHORTCUT
+dialogue: I found a narrow gravitational corridor. It's risky, but we'll arrive much sooner.
+prompt: Take the shortcut?
+[ACCEPT_EFFECTS]
+resources: 0.4,2.0,1.8,0
+relationships: 0,3,0,0
+response: Smooth flying! We conserved plenty of supplies.
+[DENY_EFFECTS]
+resources: -0.5,-1.9,-1.8,0
+relationships: 0,-2,0,0
+response: We stayed safe, but used more provisions.
+[COUNTER_OFFER]
+resources: 0.1,0.9,0.8,0
+resourceModifier: 0.3,0.8,0.8,0
+relationships: 0,-1,0,0
+relationshipModifier: 0,2,0,0
+neutralResponse: I found a middle route.
+badResponse: It barely saved us anything.
+goodResponse: Good call. We cut some travel time without much risk.
+[END]
+
+[EVENT]
+isUltimatum: false
+relationshipUltimatum: false
+NPC: Alisa {Exploration Master}
+header: CARGO POD
+dialogue: There's a drifting cargo pod ahead. We could stop and retrieve it.
+prompt: Recover the pod?
+[ACCEPT_EFFECTS]
+resources: 0.8,1.1,1.0,4.8
+relationships: 0,0,3,0
+response: The pod was full of useful supplies.
+[DENY_EFFECTS]
+resources: 0,-0.7,-0.6,0
+relationships: 0,0,-2,0
+response: We left it behind and continued onward.
+[COUNTER_OFFER]
+resources: 0.3,0.4,0.4,2.5
+resourceModifier: 0.3,0.5,0.5,1.6
+relationships: 0,0,-1,0
+relationshipModifier: 0,0,2,0
+neutralResponse: We recovered what was easiest to grab.
+badResponse: There wasn't much time to search.
+goodResponse: We salvaged the best cargo and kept moving.
+[END]
+
+[EVENT]
+isUltimatum: false
+relationshipUltimatum: false
+NPC: Vance {Combat Warden}
+header: SUSPICIOUS CONTACT
+dialogue: An unidentified vessel is shadowing us. I don't trust it.
+prompt: Intercept them?
+[ACCEPT_EFFECTS]
+resources: 0,0,0,-3.6
+relationships: 0,0,0,3
+response: They fled after a warning volley.
+[DENY_EFFECTS]
+resources: -1.2,-1.8,-1.4,0
+relationships: 0,0,0,-3
+response: They stole supplies while we were distracted.
+[COUNTER_OFFER]
+resources: -0.3,-0.7,-0.6,-1.7
+resourceModifier: 0.5,0.8,0.7,1.2
+relationships: 0,0,0,-1
+relationshipModifier: 0,0,0,2
+neutralResponse: We exchanged warnings before they left.
+badResponse: They slipped away with some cargo.
+goodResponse: Strong diplomacy. We protected most of our supplies.
+[END]
+
+[EVENT]
+isUltimatum: false
+relationshipUltimatum: false
+NPC: Carrie {Aeronautics Engineer}
+header: SOLAR PANELS
+dialogue: Dust is reducing our solar array efficiency.
+prompt: Clean the panels?
+[ACCEPT_EFFECTS]
+resources: 1.8,0,0,-2.8
+relationships: 3,0,0,0
+response: Power efficiency improved significantly.
+[DENY_EFFECTS]
+resources: -1.5,0,0,0
+relationships: -2,0,0,0
+response: Life support had to work harder than expected.
+[COUNTER_OFFER]
+resources: 0.7,0,0,-1.3
+resourceModifier: 0.6,0,0,1
+relationships: -1,0,0,0
+relationshipModifier: 2,0,0,0
+neutralResponse: We cleaned only the worst sections.
+badResponse: They still need maintenance.
+goodResponse: We restored most of their efficiency.
+[END]
+
+[EVENT]
+isUltimatum: false
+relationshipUltimatum: false
+NPC: Malik {Military Pilot}
+header: FUEL EFFICIENCY
+dialogue: I can fine-tune our flight path to conserve life support reserves.
+prompt: Let me optimize the route?
+[ACCEPT_EFFECTS]
+resources: 0.6,1.4,1.5,0
+relationships: 0,3,0,0
+response: Every kilometer counted.
+[DENY_EFFECTS]
+resources: 0,-1.3,-1.2,0
+relationships: 0,-2,0,0
+response: We flew the standard route.
+[COUNTER_OFFER]
+resources: 0.2,0.7,0.8,0
+resourceModifier: 0.3,0.5,0.5,0
+relationships: 0,-1,0,0
+relationshipModifier: 0,2,0,0
+neutralResponse: I optimized part of the route.
+badResponse: We missed most of the savings.
+goodResponse: Nice compromise. We still saved resources.
+[END]
+
+[EVENT]
+isUltimatum: false
+relationshipUltimatum: false
+NPC: Alisa {Exploration Master}
+header: ICE ASTEROID
+dialogue: There's an ice-rich asteroid nearby. We could mine some water.
+prompt: Mine the asteroid?
+[ACCEPT_EFFECTS]
+resources: -0.3,3.2,-0.4,-1.8
+relationships: 0,0,3,0
+response: The ice was exceptionally pure.
+[DENY_EFFECTS]
+resources: 0,-1.2,0,0
+relationships: 0,0,-2,0
+response: We continued without stopping.
+[COUNTER_OFFER]
+resources: -0.1,1.7,-0.2,-0.9
+resourceModifier: 0.2,0.9,0.2,0.6
+relationships: 0,0,-1,0
+relationshipModifier: 0,0,2,0
+neutralResponse: We collected a small amount before leaving.
+badResponse: There wasn't enough time.
+goodResponse: Great timing. We filled our reserves quickly.
+[END]
+
+[EVENT]
+isUltimatum: false
+relationshipUltimatum: false
+NPC: Vance {Combat Warden}
+header: TARGET PRACTICE
+dialogue: The crew could use a live-fire exercise before our next encounter.
+prompt: Approve training?
+[ACCEPT_EFFECTS]
+resources: 0,0,0,-2.8
+relationships: 0,0,0,4
+response: The crew is far more prepared now.
+[DENY_EFFECTS]
+resources: 0,0,0,0
+relationships: 0,0,0,-2
+response: Hopefully we won't regret skipping practice.
+[COUNTER_OFFER]
+resources: 0,0,0,-1.2
+resourceModifier: 0,0,0,0.9
+relationships: 0,0,0,1
+relationshipModifier: 0,0,0,1
+neutralResponse: We held a short training session.
+badResponse: Hardly enough practice.
+goodResponse: Good balance between readiness and conservation.
+[END]
+
+[EVENT]
+isUltimatum: false
+relationshipUltimatum: false
+NPC: Alisa {Exploration Master}
+header: ALIEN ORCHARD
+dialogue: We've found edible alien fruit. Preliminary scans say it's safe.
+prompt: Harvest it?
+[ACCEPT_EFFECTS]
+resources: 0,0.8,3.1,0
+relationships: 0,0,3,0
+response: Fresh food always boosts morale.
+[DENY_EFFECTS]
+resources: 0,0,-1.5,0
+relationships: 0,0,-2,0
+response: We kept relying on our stored rations.
+[COUNTER_OFFER]
+resources: 0,0.4,1.6,0
+resourceModifier: 0,0.3,0.8,0
+relationships: 0,0,-1,0
+relationshipModifier: 0,0,2,0
+neutralResponse: We harvested only the ripe fruit.
+badResponse: We left too much behind.
+goodResponse: We brought back enough for several meals.
+[END]
+
+[EVENT]
+isUltimatum: false
+relationshipUltimatum: false
+NPC: Carrie {Aeronautics Engineer}
+header: EMERGENCY BATTERIES
+dialogue: We can recycle old battery cells into emergency oxygen reserves.
+prompt: Recycle the batteries?
+[ACCEPT_EFFECTS]
+resources: 2.6,0,0,-4.8
+relationships: 3,0,0,0
+response: Emergency reserves are fully stocked.
+[DENY_EFFECTS]
+resources: -1.4,0,0,0
+relationships: -2,0,0,0
+response: We'll have to rely on the primary systems.
+[COUNTER_OFFER]
+resources: 1.2,0,0,-2.4
+resourceModifier: 0.7,0,0,1.5
+relationships: -1,0,0,0
+relationshipModifier: 2,0,0,0
+neutralResponse: I converted only part of the battery bank.
+badResponse: It won't help much.
+goodResponse: We gained a healthy emergency reserve without using many parts.
+[END]
+
+[EVENT]
+isUltimatum: false
+relationshipUltimatum: false
+NPC: Alisa {Exploration Master}
+header: ABANDONED RESEARCH LAB
+dialogue: Commander, I found an old research station drifting nearby. It appears to have been abandoned for years.
+prompt: Explore the station?
+[ACCEPT_EFFECTS]
+resources: 1.2,1.8,2.3,5.6
+relationships: 0,0,5,0
+response: Incredible find! The station still had emergency supplies and equipment.
+[DENY_EFFECTS]
+resources: 0,-0.5,-0.5,0
+relationships: 0,0,-2,0
+response: We continued onward and left the station behind.
+[COUNTER_OFFER]
+resources: 0.6,1.0,1.2,3.2
+resourceModifier: 0.4,0.5,0.6,2.1
+relationships: 0,0,1,0
+relationshipModifier: 0,0,3,0
+neutralResponse: We grabbed the easiest supplies and left.
+badResponse: We didn't have enough time to search properly.
+goodResponse: Great decision. We recovered valuable supplies safely.
+[END]
+
+
+[EVENT]
+isUltimatum: false
+relationshipUltimatum: false
+NPC: Malik {Military Pilot}
+header: PERFECT TRAJECTORY
+dialogue: Commander, I calculated a route using a nearby planet's gravity well. We can save several days of travel.
+prompt: Follow the route?
+[ACCEPT_EFFECTS]
+resources: 0.8,2.4,2.1,0
+relationships: 0,5,0,0
+response: Amazing navigation. We arrived much earlier than expected.
+[DENY_EFFECTS]
+resources: -0.4,-1.5,-1.4,0
+relationships: 0,-2,0,0
+response: The normal route worked, but cost extra supplies.
+[COUNTER_OFFER]
+resources: 0.4,1.2,1.1,0
+resourceModifier: 0.3,0.8,0.7,0
+relationships: 0,1,0,0
+relationshipModifier: 0,3,0,0
+neutralResponse: We used a safer version of the route.
+badResponse: The shortcut benefits were reduced.
+goodResponse: Excellent compromise. We saved supplies without much risk.
+[END]
+
+
+[EVENT]
+isUltimatum: false
+relationshipUltimatum: false
+NPC: Carrie {Aeronautics Engineer}
+header: AUTOMATED FACTORY
+dialogue: I discovered an old automated factory that can still produce basic components.
+prompt: Activate the factory?
+[ACCEPT_EFFECTS]
+resources: 0,0,0,7.2
+relationships: 5,0,0,0
+response: The factory produced useful replacement parts.
+[DENY_EFFECTS]
+resources: 0,0,0,0
+relationships: -2,0,0,0
+response: We left the factory untouched.
+[COUNTER_OFFER]
+resources: 0,0,0,3.8
+resourceModifier: 0,0,0,3
+relationships: 2,0,0,0
+relationshipModifier: 2,0,0,0
+neutralResponse: We activated only the safest machines.
+badResponse: Production was lower than expected.
+goodResponse: Smart choice. We gained parts without wasting power.
+[END]
+
+
+[EVENT]
+isUltimatum: false
+relationshipUltimatum: false
+NPC: Vance {Combat Warden}
+header: MERCENARY OFFER
+dialogue: A group of independent mercenaries offered to trade old weapons for supplies.
+prompt: Trade with them?
+[ACCEPT_EFFECTS]
+resources: -1.5,0,0,5.8
+relationships: 0,0,0,4
+response: The new equipment should keep us safer.
+[DENY_EFFECTS]
+resources: 0,0,0,0
+relationships: 0,0,0,-2
+response: They left peacefully.
+[COUNTER_OFFER]
+resources: -0.7,0,0,3.2
+resourceModifier: 0.5,0,0,2
+relationships: 0,0,0,1
+relationshipModifier: 0,0,0,2
+neutralResponse: We negotiated a smaller trade.
+badResponse: They weren't impressed with our offer.
+goodResponse: Good deal. We improved our defenses cheaply.
+[END]
+
+
+[EVENT]
+isUltimatum: false
+relationshipUltimatum: false
+NPC: Alisa {Exploration Master}
+header: CRYSTAL CAVERN
+dialogue: Sensors detected valuable minerals inside an asteroid cavern.
+prompt: Mine the crystals?
+[ACCEPT_EFFECTS]
+resources: 0,0,0,6.5
+relationships: 0,0,4,0
+response: The crystals were extremely valuable.
+[DENY_EFFECTS]
+resources: 0,0,0,0
+relationships: 0,0,-1,0
+response: We avoided the risk and moved on.
+[COUNTER_OFFER]
+resources: 0,0,0,3.5
+resourceModifier: 0,0,0,2.5
+relationships: 0,0,1,0
+relationshipModifier: 0,0,2,0
+neutralResponse: We collected only easy-to-reach deposits.
+badResponse: Most of the valuable material was too deep.
+goodResponse: Excellent. We got resources without risking the ship.
+[END]
+
+
+[EVENT]
+isUltimatum: false
+relationshipUltimatum: false
+NPC: Carrie {Aeronautics Engineer}
+header: EFFICIENT SYSTEMS
+dialogue: I found several ways to reduce waste from our life support systems.
+prompt: Allow upgrades?
+[ACCEPT_EFFECTS]
+resources: 2.1,1.4,1.3,0
+relationships: 5,0,0,0
+response: The ship is now much more efficient.
+[DENY_EFFECTS]
+resources: 0,0,0,0
+relationships: -2,0,0,0
+response: We kept operating normally.
+[COUNTER_OFFER]
+resources: 1.1,0.8,0.7,0
+resourceModifier: 0.5,0.4,0.4,0
+relationships: 2,0,0,0
+relationshipModifier: 2,0,0,0
+neutralResponse: I implemented partial improvements.
+badResponse: The changes were too limited.
+goodResponse: Nice. We improved efficiency without major changes.
+[END]
+
+
+[EVENT]
+isUltimatum: false
+relationshipUltimatum: false
+NPC: Malik {Military Pilot}
+header: HIDDEN STATION
+dialogue: I found an old navigation beacon that contains updated star charts.
+prompt: Download the charts?
+[ACCEPT_EFFECTS]
+resources: 0.7,1.0,1.1,2.5
+relationships: 0,4,0,0
+response: The new charts revealed safer routes.
+[DENY_EFFECTS]
+resources: 0,0,0,0
+relationships: 0,-2,0,0
+response: We continued using our old maps.
+[COUNTER_OFFER]
+resources: 0.3,0.5,0.5,1.4
+resourceModifier: 0.2,0.3,0.3,1
+relationships: 0,1,0,0
+relationshipModifier: 0,2,0,0
+neutralResponse: We copied only the most useful information.
+badResponse: The data was incomplete.
+goodResponse: Great. The new routes will help later.
+[END]
+
+
+[EVENT]
+isUltimatum: false
+relationshipUltimatum: false
+NPC: Vance {Combat Warden}
+header: CREW TRAINING
+dialogue: The crew has requested combat training exercises to improve emergency response.
+prompt: Approve training?
+[ACCEPT_EFFECTS]
+resources: 0,0,-0.5,-2.2
+relationships: 0,0,0,5
+response: Everyone is more prepared for future threats.
+[DENY_EFFECTS]
+resources: 0,0,0,0
+relationships: 0,0,0,-3
+response: Training was postponed.
+[COUNTER_OFFER]
+resources: 0,0,-0.2,-1
+resourceModifier: 0,0,0,0.7
+relationships: 0,0,0,2
+relationshipModifier: 0,0,0,2
+neutralResponse: We held a shorter training session.
+badResponse: The crew wanted more practice.
+goodResponse: Efficient training with minimal resource cost.
+[END]
+
+
+[EVENT]
+isUltimatum: false
+relationshipUltimatum: false
+NPC: Alisa {Exploration Master}
+header: FRIENDLY TRADERS
+dialogue: A civilian colony has offered to exchange extra supplies for our spare materials.
+prompt: Trade resources?
+[ACCEPT_EFFECTS]
+resources: 1.5,2.0,2.2,-3.5
+relationships: 0,0,4,0
+response: The colony gave us more than expected.
+[DENY_EFFECTS]
+resources: 0,0,0,0
+relationships: 0,0,-2,0
+response: We declined the offer.
+[COUNTER_OFFER]
+resources: 0.8,1.1,1.2,-1.8
+resourceModifier: 0.5,0.7,0.7,1
+relationships: 0,0,2,0
+relationshipModifier: 0,0,2,0
+neutralResponse: We made a smaller trade.
+badResponse: The deal wasn't very profitable.
+goodResponse: Good negotiation. We got supplies while keeping scrap.
+[END]
+
+
+[EVENT]
+isUltimatum: false
+relationshipUltimatum: false
+NPC: Vance {Combat Warden}
+header: OLD BATTLEFIELD
+dialogue: Sensors detected abandoned military equipment from an old conflict nearby.
+prompt: Salvage the equipment?
+[ACCEPT_EFFECTS]
+resources: 0,0,0,8.1
+relationships: 0,0,0,4
+response: We recovered enough materials to upgrade our defenses.
+[DENY_EFFECTS]
+resources: 0,0,0,0
+relationships: 0,0,0,-1
+response: We avoided the dangerous area.
+[COUNTER_OFFER]
+resources: 0,0,0,4.2
+resourceModifier: 0,0,0,3
+relationships: 0,0,0,1
+relationshipModifier: 0,0,0,2
+neutralResponse: We salvaged only safe equipment.
+badResponse: Most of the useful material was unreachable.
+goodResponse: Great choice. We improved our supplies safely.
+[END]
+
+[EVENT]
+isUltimatum: false
+relationshipUltimatum: false
+NPC: Carrie {Aeronautics Engineer}
+header: OXYGEN PROCESSOR FAILURE
+dialogue: Commander, the oxygen processor is degrading. I can repair it using spare materials or we can recycle other supplies to keep it running.
+prompt: Repair the processor?
+[ACCEPT_EFFECTS]
+resources: 3.5,0,0,-7
+relationships: 5,0,0,0
+response: The processor is restored. Our oxygen reserves are much safer now.
+[DENY_EFFECTS]
+resources: -4.5,0,0,0
+relationships: -4,0,0,0
+response: The failing processor consumed extra oxygen while struggling.
+[COUNTER_OFFER]
+resources: 1.8,-0.8,0,-3
+resourceModifier: 1.5,0.5,0,2
+relationships: 2,0,0,0
+relationshipModifier: 3,0,0,0
+neutralResponse: I repaired only the critical systems.
+badResponse: The processor is still unstable.
+goodResponse: Great compromise. We improved efficiency without spending everything.
+[END]
+
+
+[EVENT]
+isUltimatum: false
+relationshipUltimatum: false
+NPC: Alisa {Exploration Master}
+header: ICE MINING OPPORTUNITY
+dialogue: We found an asteroid containing frozen water deposits. Extracting it will require some processing materials.
+prompt: Mine the asteroid?
+[ACCEPT_EFFECTS]
+resources: -0.5,6.5,0,-4
+relationships: 0,0,4,0
+response: The asteroid contained a massive amount of usable water.
+[DENY_EFFECTS]
+resources: 0,-2,0,0
+relationships: 0,0,-2,0
+response: We continued without risking the mining equipment.
+[COUNTER_OFFER]
+resources: -0.2,3.5,0,-2
+resourceModifier: 0.3,1.5,0,1
+relationships: 0,0,1,0
+relationshipModifier: 0,0,2,0
+neutralResponse: We extracted only the easiest deposits.
+badResponse: The operation was less productive than expected.
+goodResponse: Excellent. We gained water without wasting supplies.
+[END]
+
+
+[EVENT]
+isUltimatum: false
+relationshipUltimatum: false
+NPC: Malik {Military Pilot}
+header: EMERGENCY POWER DIVERSION
+dialogue: Commander, our engines need extra power to escape a debris field. I can divert life support temporarily.
+prompt: Divert power?
+[ACCEPT_EFFECTS]
+resources: -3.2,0.8,0.5,0
+relationships: 0,5,0,0
+response: We escaped quickly, but oxygen reserves dropped slightly.
+[DENY_EFFECTS]
+resources: 0,-2,-2,0
+relationships: 0,-3,0,0
+response: We avoided the risk but spent more supplies navigating around.
+[COUNTER_OFFER]
+resources: -1.5,0.4,0.3,0
+resourceModifier: 1,1,1,0
+relationships: 0,2,0,0
+relationshipModifier: 0,2,0,0
+neutralResponse: I used only partial emergency power.
+badResponse: The debris field slowed us down.
+goodResponse: Perfect balance. We avoided danger while conserving supplies.
+[END]
+
+
+[EVENT]
+isUltimatum: false
+relationshipUltimatum: false
+NPC: Vance {Combat Warden}
+header: WEAPON SYSTEM OVERHAUL
+dialogue: Our weapons are outdated. I can rebuild them using a large amount of scrap.
+prompt: Upgrade weapons?
+[ACCEPT_EFFECTS]
+resources: 0,0,0,-8
+relationships: 0,0,0,6
+response: Our defenses are stronger than ever.
+[DENY_EFFECTS]
+resources: 0,0,0,0
+relationships: 0,0,0,-3
+response: We kept the old systems.
+[COUNTER_OFFER]
+resources: 0,0,0,-4
+resourceModifier: 0,0,0,3
+relationships: 0,0,0,3
+relationshipModifier: 0,0,0,2
+neutralResponse: I upgraded only the most important systems.
+badResponse: The improvements were minimal.
+goodResponse: The ship is much better protected.
+[END]
+
+
+[EVENT]
+isUltimatum: false
+relationshipUltimatum: false
+NPC: Carrie {Aeronautics Engineer}
+header: WATER RECYCLER UPGRADE
+dialogue: I can improve the water recycler, but the modification requires oxygen storage components.
+prompt: Convert oxygen systems?
+[ACCEPT_EFFECTS]
+resources: -2.5,4.5,0,-3
+relationships: 5,0,0,0
+response: The new recycler dramatically improved water recovery.
+[DENY_EFFECTS]
+resources: 0,-3,0,0
+relationships: -2,0,0,0
+response: Water efficiency continued declining.
+[COUNTER_OFFER]
+resources: -1.2,2.3,0,-1.5
+resourceModifier: 1,1,0,1
+relationships: 2,0,0,0
+relationshipModifier: 2,0,0,0
+neutralResponse: I upgraded only part of the system.
+badResponse: The recycler improvement was limited.
+goodResponse: Excellent. We improved water production efficiently.
+[END]
+
+
+[EVENT]
+isUltimatum: false
+relationshipUltimatum: false
+NPC: Alisa {Exploration Master}
+header: ALIEN FOOD SYNTHESIS
+dialogue: A strange alien machine appears capable of creating food, but it requires water to activate.
+prompt: Activate machine?
+[ACCEPT_EFFECTS]
+resources: 0,-3.5,6.5,0
+relationships: 0,0,5,0
+response: The machine produced edible food supplies.
+[DENY_EFFECTS]
+resources: 0,0,-2,0
+relationships: 0,0,-2,0
+response: We continued relying on our stored food.
+[COUNTER_OFFER]
+resources: 0,-1.8,3.2,0
+resourceModifier: 0,1,2,0
+relationships: 0,0,2,0
+relationshipModifier: 0,0,2,0
+neutralResponse: We produced a smaller food batch.
+badResponse: The machine output was disappointing.
+goodResponse: Great discovery. We traded water for food efficiently.
+[END]
+
+
+[EVENT]
+isUltimatum: false
+relationshipUltimatum: false
+NPC: Malik {Military Pilot}
+header: ENGINE DAMAGE
+dialogue: Commander, our engines were damaged by debris. Repairs will require either scrap or reduced life support.
+prompt: Repair engines?
+[ACCEPT_EFFECTS]
+resources: 0,0,0,-7.5
+relationships: 0,4,0,0
+response: Engines restored. We are back to full speed.
+[DENY_EFFECTS]
+resources: -3,-1,-1,0
+relationships: 0,-4,0,0
+response: Damaged engines increased our resource consumption.
+[COUNTER_OFFER]
+resources: -1.5,0,0,-3.5
+resourceModifier: 1,0.5,0.5,2
+relationships: 0,1,0,0
+relationshipModifier: 0,2,0,0
+neutralResponse: I repaired only the damaged sections.
+badResponse: The engines remain unreliable.
+goodResponse: Good decision. We restored function cheaply.
+[END]
+
+
+[EVENT]
+isUltimatum: false
+relationshipUltimatum: false
+NPC: Vance {Combat Warden}
+header: MAJOR PIRATE ATTACK
+dialogue: Commander, a heavily armed pirate vessel has intercepted us. We need everything we've got.
+prompt: Fight back?
+[ACCEPT_EFFECTS]
+resources: 0,-1,-1,-10
+relationships: 0,0,0,8
+response: The pirate ship was destroyed. It cost us ammunition, but we survived.
+[DENY_EFFECTS]
+resources: -5,-5,-4,0
+relationships: 0,0,0,-8
+response: They boarded us and stole a large amount of supplies.
+[COUNTER_OFFER]
+resources: -1,-1,-1,-5
+resourceModifier: 2,2,2,5
+relationships: 0,0,0,2
+relationshipModifier: 0,0,0,5
+neutralResponse: We scared them away without a full battle.
+badResponse: We barely escaped.
+goodResponse: Brilliant strategy. We survived with minimal losses.
+[END]
+
+
+[EVENT]
+isUltimatum: false
+relationshipUltimatum: false
+NPC: Carrie {Aeronautics Engineer}
+header: LIFE SUPPORT COLLAPSE
+dialogue: Commander, a major life support failure has occurred. I need scrap immediately or we will lose oxygen rapidly.
+prompt: Emergency repair?
+[ACCEPT_EFFECTS]
+resources: 4,0,0,-12
+relationships: 8,0,0,0
+response: Critical systems restored. That was dangerously close.
+[DENY_EFFECTS]
+resources: -8,0,0,0
+relationships: -8,0,0,0
+response: The failure consumed a huge amount of oxygen.
+[COUNTER_OFFER]
+resources: 2,-1,0,-6
+resourceModifier: 1,1,0,4
+relationships: 4,0,0,0
+relationshipModifier: 4,0,0,0
+neutralResponse: Emergency repairs are holding.
+badResponse: The system is still unstable.
+goodResponse: Excellent work. We saved the ship.
+[END]
+
+
+[EVENT]
+isUltimatum: false
+relationshipUltimatum: false
+NPC: Alisa {Exploration Master}
+header: LOST COLONY
+dialogue: We discovered a hidden colony willing to trade resources with us.
+prompt: Visit the colony?
+[ACCEPT_EFFECTS]
+resources: 2.5,2.5,2.5,-5
+relationships: 0,0,6,0
+response: The colony gave us supplies in exchange for scrap.
+[DENY_EFFECTS]
+resources: -1,-1,-1,0
+relationships: 0,0,-3,0
+response: We missed the opportunity and continued traveling.
+[COUNTER_OFFER]
+resources: 1.3,1.3,1.3,-2.5
+resourceModifier: 0.7,0.7,0.7,1.5
+relationships: 0,0,3,0
+relationshipModifier: 0,0,3,0
+neutralResponse: We made a smaller trade.
+badResponse: The colony had less to offer than expected.
+goodResponse: Great negotiation. We gained supplies without wasting scrap.
+[END]
