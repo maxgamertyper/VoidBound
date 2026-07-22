@@ -7,10 +7,14 @@
 #include <vector>
 #include <format>
 
-void PlayerTerminal::ClearLines(int count) {
+void PlayerTerminal::clearLines(int count) {
 	for (; count > 0; count--) {
 		std::cout << "\033[A\r\033[K" << std::flush;
 	}
+	std::cout << std::flush;
+}
+void PlayerTerminal::clearTerminal() {
+	std::cout << "\033[2J\033[H";
 	std::cout << std::flush;
 }
 void PlayerTerminal::goUpXLines(const int& count) {
@@ -37,17 +41,22 @@ void PlayerTerminal::clearRestOfLine() {
 	std::cout << "\033[K";
 	std::cout << std::flush;
 }
-void PlayerTerminal::PrintBars() {
-	std::cout << "||" << std::setw(52) << std::setfill(' ') << std::right << "||" << std::endl;
+void PlayerTerminal::printBars(int width) {
+	std::cout << "||" << std::setw(width+2) << std::setfill(' ') << std::right << "||" << std::endl;
+}
+void PlayerTerminal::printEqualLine(int width) {
+	std::cout << std::setw(width) << std::setfill('=') << "" << std::endl;
+}
+std::string PlayerTerminal::formatDouble(const double& number) {
+	return std::format("{:.2f}", static_cast<double>(number));
 }
 
-
-char PlayerTerminal::AwaitCharInputInline(const std::string& prompt) {
+char PlayerTerminal::awaitCharInputInline(const std::string& prompt) {
 	std::string thisInput;
 	std::getline(std::cin, thisInput);
 
 	while (thisInput.size()!=1) {
-		ClearLines(1);
+		clearLines(1);
 		std::cout << prompt << "(Invalid Input : " << thisInput << "): ";
 
 		std::getline(std::cin, thisInput);
@@ -55,13 +64,12 @@ char PlayerTerminal::AwaitCharInputInline(const std::string& prompt) {
 
 	return std::toupper(thisInput.at(0));
 }
-
-char PlayerTerminal::AwaitCharInputSeperate(const std::string& prompt, const std::string& invalidResponse) {
+char PlayerTerminal::awaitCharInputSeperate(const std::string& prompt, const std::string& invalidResponse) {
 	std::string thisInput;
 	std::getline(std::cin, thisInput);
 
 	while (thisInput.size() != 1) {
-		ClearLines(1);
+		clearLines(1);
 		std::cout << invalidResponse;
 		sleep(2);
 		jumpToStartOfLine();
@@ -74,8 +82,7 @@ char PlayerTerminal::AwaitCharInputSeperate(const std::string& prompt, const std
 
 	return std::toupper(thisInput.at(0));
 }
-
-std::string PlayerTerminal::AwaitStrInput(const std::string& prompt) {
+std::string PlayerTerminal::awaitStrInput(const std::string& prompt) {
 	std::string out;
 	
 	std::cout << prompt;
@@ -84,20 +91,22 @@ std::string PlayerTerminal::AwaitStrInput(const std::string& prompt) {
 	return out;
 }
 
-void PlayerTerminal::ClearTerminal() {
-	std::cout << "\033[2J\033[H";
-	std::cout << std::flush;
-}
 
-void PlayerTerminal::printCenteredLine(const std::string& text, int width) {
+
+void PlayerTerminal::printCenteredLine(const std::string& text, const int& width, bool includeBars) {
 	int padding = width - text.length();
 	int leftPad = padding / 2;
 	int rightPad = padding - leftPad;
 
+	if (includeBars) {
+		std::cout << "||";
+	}
 	std::cout << std::string(leftPad, ' ') << text << std::string(rightPad, ' ');
+	if (includeBars) {
+		std::cout << "||" << std::endl;
+	}
 }
-
-void PlayerTerminal::SleepUpdateIncorrectInput(const std::string& prompt, const std::string& failMessage) {
+void PlayerTerminal::sleepUpdateIncorrectInput(const std::string& prompt, const std::string& failMessage) {
 	goUpXLines(1);
 	jumpToStartOfLine();
 	clearRestOfLine();
@@ -109,91 +118,79 @@ void PlayerTerminal::SleepUpdateIncorrectInput(const std::string& prompt, const 
 }
 
 //Sub-Scenes
-void PlayerTerminal::PrintEvent(const Event& event, const std::string& playerName) {
-	ClearTerminal();
+void PlayerTerminal::printDialogue(const std::string& type, const std::string& NPC, const std::string& response, const std::string& prompt) {
+	clearTerminal();
 
-	std::cout << std::setw(40) << std::setfill('=') << "" << std::endl;
-	std::cout << "FROM: " << event.NPC << std::endl;
-	std::cout << "TYPE: " << event.header << std::endl;
+	printEqualLine();
+	std::cout << "FROM: " << NPC << std::endl;
+	std::cout << "TYPE: " << type << std::endl;
 	std::cout << std::setw(40) << std::setfill('-') << "" << std::endl;
-	std::cout << '\"' << event.dialogue << '\"' << std::endl;
-	std::cout << std::setw(40) << std::setfill('=') << "" << std::endl << std::endl << std::endl;
-	std::cout << event.prompt << " (Y/N/C/R)" << std::endl << std::endl;
-	std::cout << "Y to accept the request of this transmisson {"
-		<< std::format("{:.2f}", static_cast<double>(event.acceptResources[0])) << " Oxygen, "
-		<< std::format("{:.2f}", static_cast<double>(event.acceptResources[1])) << " Water, "
-		<< std::format("{:.2f}", static_cast<double>(event.acceptResources[2])) << " Food, "
-		<< std::format("{:.2f}", static_cast<double>(event.acceptResources[3])) << " Scrap}";
+	std::cout << '\"' << response << '\"' << std::endl;
+	printEqualLine();
 
-	
+	if (!prompt.empty()) {
+		std::cout << prompt << std::endl << std::endl;
+
+	}
+}
+void PlayerTerminal::printEvent(const Event& event, const std::string& playerName) {
+	printDialogue(
+		event.header,
+		event.NPC,
+		event.dialogue,
+		event.prompt + " (Y/N/C/R)"
+	);
+
+	std::cout << "Y to accept the request of this transmisson {"
+		<< formatDouble(event.acceptResources[0]) << " Oxygen, "
+		<< formatDouble(event.acceptResources[1]) << " Water, "
+		<< formatDouble(event.acceptResources[2]) << " Food, "
+		<< formatDouble(event.acceptResources[3]) << " Scrap}";
 
 	std::cout << "\nN to deny the request {" 
-		<< std::format("{:.2f}", static_cast<double>(event.denyResources[0])) << " Oxygen, "
-		<< std::format("{:.2f}", static_cast<double>(event.denyResources[1])) << " Water, "
-		<< std::format("{:.2f}", static_cast<double>(event.denyResources[2])) << " Food, "
-		<< std::format("{:.2f}", static_cast<double>(event.denyResources[3])) << " Scrap}";
+		<< formatDouble(event.denyResources[0]) << " Oxygen, "
+		<< formatDouble(event.denyResources[1]) << " Water, "
+		<< formatDouble(event.denyResources[2]) << " Food, "
+		<< formatDouble(event.denyResources[3]) << " Scrap}";
 		
 	std::cout << "\nC to attempt to convince this NPC for a middle ground\nR to view resources\nQ to quit" << std::endl;
 	std::cout << "Your Command, Captain " << playerName << ": ";
 }
-
-void PlayerTerminal::printResponse(const std::string& response, const std::string& NPC) {
-	ClearTerminal();
-
-	std::cout << std::setw(40) << std::setfill('=') << "" << std::endl;
-	std::cout << "FROM: " << NPC << std::endl;
-	std::cout << "TYPE: RESPONSE" << std::endl;
-	std::cout << std::setw(40) << std::setfill('-') << "" << std::endl;
-	std::cout << '\"' << response << '\"' << std::endl;
-	std::cout << std::setw(40) << std::setfill('=') << "" << std::endl;
-
+void PlayerTerminal::printResponse(const std::string& dialogue, const std::string& NPC) {
+	printDialogue(
+		"RESPONSE",
+		NPC,
+		dialogue
+	);
 }
-
 void PlayerTerminal::printResources(const double resources[4]) {
-	ClearTerminal();
+	clearTerminal();
+	printEqualLine();
+	printBars(36);
+	printCenteredLine("CALCULATING RESOURCES...",36,true);
+	printBars(36);
+	printEqualLine();
 
-	std::cout << std::setw(40) << std::setfill('=') << "" << std::endl;
-	std::cout << "||" << std::setw(38) << std::setfill(' ') << std::right << "||" << std::endl;
-	std::cout << "||";
-	printCenteredLine("CALCULATING RESOURCES...",36);
-	std::cout << "||" << std::endl;
-	std::cout << "||" << std::setw(38) << std::setfill(' ') << std::right << "||" << std::endl;
-
-	std::cout << std::setw(40) << std::setfill('=') << "" << std::endl;
-
+	// pretend to do smth
 	sleep(2);
-
 	goUpXLines(5);
-	ClearLines(5);
+	clearLines(5);
 
-	std::cout << std::setw(40) << std::setfill('=') << "" << std::endl;
-	std::cout << "||" << std::setw(38) << std::setfill(' ') << std::right << "||" << std::endl;
+	// clear the data and show the resources
+	printEqualLine();
+	printBars(36);
 
-	
-	std::cout << "||";	
-	printCenteredLine("OXYGEN :" + std::to_string(resources[0]),36);
-	std::cout << "||" << std::endl;
-	
-	std::cout << "||";
-	printCenteredLine("WATER  :" + std::to_string(resources[1]), 36);
-	std::cout << "||" << std::endl;
-	
-	std::cout << "||";
-	printCenteredLine("FOOD  :" + std::to_string(resources[2]), 36);
-	std::cout << "||" << std::endl;
-	
-	std::cout << "||";
-	printCenteredLine("SCRAP :" + std::to_string(resources[3]), 36);
-	std::cout << "||" << std::endl;
+	printCenteredLine("OXYGEN :" + std::to_string(resources[0]), 36, true);
+	printCenteredLine("WATER  :" + std::to_string(resources[1]), 36, true);
+	printCenteredLine("FOOD  :" + std::to_string(resources[2]), 36, true);
+	printCenteredLine("SCRAP :" + std::to_string(resources[3]), 36, true);
 
-	std::cout << "||" << std::setw(38) << std::setfill(' ') << std::right << "||" << std::endl;
-	std::cout << std::setw(40) << std::setfill('=') << "" << std::endl;
+	printBars(36);
+	printEqualLine();
 
-	AwaitStrInput("SEC-OS://RESOURCES > "); // just wait until they type smth
+	awaitStrInput("SEC-OS://RESOURCES (TYPE ANYTHING) > "); // just wait until they type smth
 }
-
 void PlayerTerminal::printDeath(const int& resourceIndex) {
-	ClearTerminal();
 	std::string NPC;
 	std::string dismantleEvent;
 
@@ -220,36 +217,28 @@ void PlayerTerminal::printDeath(const int& resourceIndex) {
 			break;
 	}
 
-	std::cout << std::setw(40) << std::setfill('=') << "" << std::endl;
-	std::cout << "FROM: " << NPC << std::endl;
-	std::cout << "TYPE: TERMINATION WARNING" << std::endl;
-	std::cout << std::setw(40) << std::setfill('-') << "" << std::endl;
-	std::cout << '\"' << dismantleEvent << '\"' << std::endl;
-	std::cout << std::setw(40) << std::setfill('=') << "" << std::endl;
-
+	printDialogue(
+		"TERMINATION WARNING",
+		NPC,
+		dismantleEvent
+	);
 	sleep(8);
 }
 
 // Scenes
-void PlayerTerminal::BootSequence() {
-	ClearTerminal();
+void PlayerTerminal::bootSequence() {
+	clearTerminal();
 
-	std::cout << std::setw(54) << std::setfill('=') << "" << std::endl;
-	std::cout << "||" << std::setw(52) << std::setfill(' ') << "||" << std::endl;
-	std::cout << "||" << std::setw(52) << "||" << std::endl;
+	printEqualLine(54);
+	printBars();
+	printBars();
 
-	std::cout << "||";
-	printCenteredLine("--- DEEP SPACE LOGISTICS ---");
-	std::cout << "||" << std::endl;
+	printCenteredLine("--- DEEP SPACE LOGISTICS ---",50,true);
+	printCenteredLine("BOOTING SECTOR OS v4.2",50,true);
 
-	std::cout << "||";
-	printCenteredLine("BOOTING SECTOR OS v4.2");
-	std::cout << "||" << std::endl;
-
-	std::cout << "||" << std::setw(52) << "||" << std::endl;
-	std::cout << "||" << std::setw(52) << "||" << std::endl;
-	std::cout << std::setw(54) << std::setfill('=') << "" << std::endl;
-
+	printBars();
+	printBars();
+	printEqualLine(54);
 
 	std::cout << "\nConnecting to Sector Relay...\n";
 	std::cout << "[" << std::setw(20) << std::setfill('-') << "" << "]";
@@ -266,21 +255,20 @@ void PlayerTerminal::BootSequence() {
 	std::cout << std::endl;
 }
 
-void PlayerTerminal::NewGameInputSequence(std::string& outPlayerName, std::string& outVesselName) {
-	ClearTerminal();
+void PlayerTerminal::newGameInputSequence(std::string& outPlayerName, std::string& outVesselName) {
+	clearTerminal();
 
-	std::cout << std::setw(54) << std::setfill('=') << "" << std::endl;
+	printEqualLine(54);
 
 	printCenteredLine("--- NEW SESSION INITIALIZATION ---", 54);
 	std::cout << std::endl;
 
-	std::cout << std::setw(54) << std::setfill('=') << "" << std::endl;
+	printEqualLine(54);
 
 	std::cout << "      COMMANDER NAME : [" << std::setfill('-') << std::setw(20) << "" << "]\n";
-	std::cout << "      VESSEL REGISTRY: [" << std::setfill(' ') << std::setw(20) << "" << "]" << std::endl;
+	std::cout << "      VESSEL REGISTRY: [" << std::setw(20) << "" << "]" << std::endl;
 
-	std::cout << std::setw(54) << std::setfill('=') << "" << std::endl;
-
+	printEqualLine(54);
 
 	// Go to the commander line
 	jumpToStartOfLine();
@@ -288,18 +276,21 @@ void PlayerTerminal::NewGameInputSequence(std::string& outPlayerName, std::strin
 	goRightXChars(24);
 
 	// await name input
-	std::string playerName = AwaitStrInput("");
+	std::string playerName = awaitStrInput("");
 	while (playerName.empty()) {
 		goUpXLines(1);
+		jumpToStartOfLine();
 		goRightXChars(24);
-		playerName = AwaitStrInput("");
+		playerName = awaitStrInput("");
 	}
 	outPlayerName = playerName;
 	outPlayerName.resize(20, ' ');
+
 	// go back to the commander name location
 	goUpXLines(1);
 	jumpToStartOfLine();
 	goRightXChars(24);
+
 	// print the new name cut off
 	std::cout << outPlayerName << "]" << std::flush;
 	clearRestOfLine();
@@ -308,22 +299,27 @@ void PlayerTerminal::NewGameInputSequence(std::string& outPlayerName, std::strin
 	goDownXLines(1);
 	jumpToStartOfLine();
 	goRightXChars(24);
+
 	// change the fill to dashes
 	std::cout << std::setfill('-') << std::setw(20) << "" << std::flush;
 	goLeftXChars(20);
+
 	// Wait for the user to type the name
-	std::string vesselName = AwaitStrInput("");
+	std::string vesselName = awaitStrInput("");
 	while (vesselName.empty()) {
 		goUpXLines(1);
+		jumpToStartOfLine();
 		goRightXChars(24);
-		vesselName = AwaitStrInput("");
+		vesselName = awaitStrInput("");
 	}
 	outVesselName = vesselName;
 	outVesselName.resize(20, ' ');
+
 	//go back to the vessel locaiton
 	goUpXLines(1);
 	jumpToStartOfLine();
 	goRightXChars(24);
+
 	// print the new name cut off
 	std::cout << outVesselName << "]" << std::flush;
 	clearRestOfLine();
@@ -333,7 +329,7 @@ void PlayerTerminal::NewGameInputSequence(std::string& outPlayerName, std::strin
 	jumpToStartOfLine();
 	printCenteredLine("--- Registering Ship with Space Command ---", 54);
 	std::cout << std::endl;
-	std::cout << std::setw(54) << std::setfill('=') << "" << std::endl;
+	printEqualLine(54);
 
 	//wait 5 seconds
 	sleep(5);
@@ -350,57 +346,45 @@ void PlayerTerminal::NewGameInputSequence(std::string& outPlayerName, std::strin
 	sleep(2);
 }
 
-void PlayerTerminal::PrintMainMenu() {
-	ClearTerminal();
+void PlayerTerminal::printMainMenu() {
+	clearTerminal();
 
-	std::cout << std::setw(54) << std::setfill('=') << "" << std::endl;
+	printEqualLine(54);
 	printCenteredLine("=== MAIN MENU ===");
 	std::cout << std::endl;
-	std::cout << std::setw(54) << std::setfill('=') << "" << std::endl;
+	printEqualLine(54);
 
-	PrintBars();
+	printBars();
 
 	// Menu Options
-	std::cout << "||";
-	printCenteredLine("[1] REGISTER NEW VEHICLE (NEW GAME)");
-	std::cout << "||\n";
+	printCenteredLine("[1] REGISTER NEW VEHICLE (NEW GAME)",50,true);
+	printCenteredLine("[2] SEARCH VEHICLE REGISTRY (LOAD GAME)",50,true);
+	printCenteredLine("[3] SECTOR LEADERBOARD (LEADERBOARD)",50,true);
+	printCenteredLine("[4] TERMINAL CONFIG (SETTINGS)",50,true);
+	printCenteredLine("[5] ABANDON VESSEL (QUIT)",50,true);
 
-	std::cout << "||";
-	printCenteredLine("[2] SEARCH VEHICLE REGISTRY (LOAD GAME)");
-	std::cout << "||\n";
-
-	std::cout << "||";
-	printCenteredLine("[3] SECTOR LEADERBOARD (LEADERBOARD)");
-	std::cout << "||\n";
-
-	std::cout << "||";
-	printCenteredLine("[4] TERMINAL CONFIG (SETTINGS)");
-	std::cout << "||\n";
-
-	std::cout << "||";
-	printCenteredLine("[5] ABANDON VESSEL (QUIT)");
-	std::cout << "||\n";
-
-	PrintBars();
-	std::cout << std::setw(54) << std::setfill('=') << "" << std::endl;
+	printBars();
+	printEqualLine(54);
 	std::cout << std::endl;
 
 	std::cout << "SEC-OS:// INPUT DIRECTIVE > ";
 }
 
-void PlayerTerminal::LeaderboardSequence(const std::vector<LeaderboardEntry>& leaderboard, const int& pageNumber, const int& pageCount) {
-	ClearTerminal();
+void PlayerTerminal::leaderboardSequence(const std::vector<LeaderboardEntry>& leaderboard, const int& pageNumber, const int& pageCount) {
+	clearTerminal();
 
 	//head
-	std::cout << std::setw(54) << std::setfill('=') << "" << std::endl;
+	printEqualLine(54);
 	printCenteredLine("--- GALACTIC RECORDS (PG " + std::to_string(pageNumber) + "/" + std::to_string(pageCount) + ")---", 54);
 	std::cout << std::endl;
-	std::cout << std::setw(54) << "" << std::endl;
+	printEqualLine(54);
 
 	//page layout
-	std::cout << "||" << " RNK  DAYS  " << std::setfill(' ') << std::setw(19) << std::left << "COMMANDER" << std::setw(19) << std::left << "VESSEL" << "||" << std::endl;
+	std::cout << "||" << " RNK  DAYS  " 
+		<< std::setfill(' ') << std::setw(19) << std::left << "COMMANDER" 
+		<< std::setw(19) << std::left << "VESSEL" << "||" << std::endl;
+
 	std::cout << "||" << std::setw(52) << std::setfill('-') << std::right << "||" << std::endl;
-	
 
 	//entries
 	int startingIndex = (pageNumber-1) * 10;
@@ -408,22 +392,20 @@ void PlayerTerminal::LeaderboardSequence(const std::vector<LeaderboardEntry>& le
 	int emptyEntries = 10 - (endingIndex - startingIndex);
 
 	for (; startingIndex < endingIndex; startingIndex++) {
-		PrintLeaderBoardEntry(leaderboard.at(startingIndex), startingIndex+1);
+		printLeaderBoardEntry(leaderboard.at(startingIndex), startingIndex+1);
 	}
 	for (; emptyEntries > 0; emptyEntries--) {
-		PrintBars();
+		printBars();
 	}
 
 	//tail
-	std::cout << std::setw(54) << std::setfill('=') << "" << std::endl;
-	std::cout << "||";
-	printCenteredLine("[N] NEXT PAGE  |  [P] PREVIOUS PAGE  | [Q] QUIT");
-	std::cout << "||" << std::endl;
-	std::cout << std::setw(54) << std::setfill('=') << "" << std::endl;
+	printEqualLine(54);
+	printCenteredLine("[N] NEXT PAGE  |  [P] PREVIOUS PAGE  | [Q] QUIT",50,true);
+	printEqualLine(54);
 	std::cout << "SEC-OS://RECORDS/CMD > ";
 }
 
-void PlayerTerminal::PrintLeaderBoardEntry(const LeaderboardEntry& entry, const int& rank) {
+void PlayerTerminal::printLeaderBoardEntry(const LeaderboardEntry& entry, const int& rank) {
 	std::string rankString = std::to_string(rank);
 	if (rank >= 1000) {
 		rankString.resize(2);
@@ -460,25 +442,21 @@ void PlayerTerminal::PrintLeaderBoardEntry(const LeaderboardEntry& entry, const 
 	std::cout << "||" << std::endl;
 }
 
-void PlayerTerminal::SettingsSequence(std::string& eventsFile, std::string& leaderboardFile) {
-	ClearTerminal();
+void PlayerTerminal::settingsSequence(std::string& eventsFile, std::string& leaderboardFile) {
+	clearTerminal();
 
 	//HEAD
-	std::cout << std::setw(54) << std::setfill('=') << "" << std::endl;
+	printEqualLine(54);
 	printCenteredLine("=== SETTINGS ===");
 	std::cout << std::endl;
-	std::cout << std::setw(54) << "" << std::endl;
+	printEqualLine(54);
 
 	std::cout << "||" << std::setw(52) << std::setfill('-') << "||" << std::endl;
-	std::cout << "||";
-	printCenteredLine("--- WARNING: FILE LENGTH LIMIT: 20 ---");
-	std::cout << "||" << std::endl;
+	printCenteredLine("--- WARNING: FILE LENGTH LIMIT: 20 ---",50,true);
 	std::cout << "||" << std::setw(52) << std::setfill('-') << "||" << std::endl;
 
-
-	PrintBars();
-	PrintBars();
-
+	printBars();
+	printBars();
 
 	std::cout << "||     Events File      : [";
 	std::cout << std::setfill('-') << std::setw(20) << std::left << eventsFile << "]    ||" << std::endl;
@@ -486,18 +464,17 @@ void PlayerTerminal::SettingsSequence(std::string& eventsFile, std::string& lead
 	std::cout << "||     Leaderboard File : [";
 	std::cout << std::setfill(' ') << std::setw(20) << std::left << leaderboardFile << "]    ||" << std::endl;
 
-
 	//TAIL
-	PrintBars();
-	PrintBars();
-	std::cout << std::setw(54) << std::setfill('=') << "" << std::endl;
+	printBars();
+	printBars();
+	printEqualLine(54);
 
 	//align input location to events
 	goUpXLines(5);
 	jumpToStartOfLine();
 	goRightXChars(27);
 
-	std::string input = AwaitStrInput("");
+	std::string input = awaitStrInput("");
 	
 	if (!input.empty()) {
 		eventsFile = input;
@@ -540,7 +517,7 @@ void PlayerTerminal::SettingsSequence(std::string& eventsFile, std::string& lead
 	jumpToStartOfLine();
 	goRightXChars(27);
 
-	input = AwaitStrInput("");
+	input = awaitStrInput("");
 
 	if (!input.empty()) {
 		leaderboardFile = input;
@@ -579,26 +556,21 @@ void PlayerTerminal::SettingsSequence(std::string& eventsFile, std::string& lead
 }
 
 bool PlayerTerminal::welcomeBackSequence(const std::string& playerName, const std::string& vesselName) {
-	ClearTerminal();
-	
-	std::cout << std::setw(40) << std::setfill('=') << "" << std::endl;
-	std::cout << "FROM: Space Command (Amaia)" << std::endl;
-	std::cout << "TYPE: Response Request" << std::endl;
-	std::cout << std::setw(40) << std::setfill('-') << "" << std::endl;
-	std::cout << "\"Captain " << playerName
-		<< ", we need you to respond, there are urgent events happening in your vessel, " << vesselName 
-		<< "!\n Please respond or a rescue fleet will be sent for clean up." 
-		<< '\"' << std::endl;
-	std::cout << std::setw(40) << std::setfill('=') << "" << std::endl << std::endl << std::endl;
-	std::cout << "Respond to Space Command? (Y/N)" << std::endl << std::endl;
-	std::cout << "Y to return to your ship (Continue Save) \nN to accept rescue fleet (Abandon Save)" << std::endl;
+	printDialogue(
+		"Response Request",
+		"Space Command (Amaia)",
+		"\"Captain " + playerName +
+		", we need you to respond, there are urgent events happening in your vessel, " +
+		vesselName + "!\n Please respond or a rescue fleet will be sent for clean up.\"\n",
+		"Respond to Space Command? (Y/N)\n\nY to return to your ship (Continue Save) \nN to accept rescue fleet (Abandon Save)"
+	);
 
 	std::string prompt = "Your Command, Captain " + playerName + ": ";
 	std::cout << prompt;
 
 
 	while (true) {
-		char response = AwaitCharInputInline(prompt);
+		char response = awaitCharInputInline(prompt);
 
 		if (response == 'Y') {
 			return true;
@@ -615,25 +587,22 @@ bool PlayerTerminal::welcomeBackSequence(const std::string& playerName, const st
 }
 
 bool PlayerTerminal::startSequence(const std::string& playerName, const std::string& vesselName) {
-	ClearTerminal();
+	printDialogue(
+		"Liftoff Request",
+		"Space Command (Ryla)",
 
-	std::cout << std::setw(40) << std::setfill('=') << "" << std::endl;
-	std::cout << "FROM: Space Command (Ryla)" << std::endl;
-	std::cout << "TYPE: Liftoff Request" << std::endl;
-	std::cout << std::setw(40) << std::setfill('-') << "" << std::endl;
-	std::cout << "\"Captain " << playerName
-		<< ", we have noticed a surge of heat and fuel usage in your area.\n Supposedly for you new vessel, " << vesselName
-		<< "\n You may be new to this but you need to send us a liftoff request before you do so. \n Are you commencing lift off?"
-		<< '\"' << std::endl;
-	std::cout << std::setw(40) << std::setfill('=') << "" << std::endl << std::endl << std::endl;
-	std::cout << "Confirm liftoff with Space Command? (L/N)" << std::endl << std::endl;
-	std::cout << "L to lift off, N to bail" << std::endl;
+		"Captain " + playerName +
+		", we have noticed a surge of heat and fuel usage in your area.\n Supposedly for you new vessel, " + vesselName
+		+ "\n You may be new to this but you need to send us a liftoff request before you do so. \n Are you commencing lift off?",
+
+		"Confirm liftoff with Space Command? (L/N)\n\nL to lift off, N to bail"
+	);
 
 	std::string prompt = "Your Command, Captain " + playerName + ": ";
 	std::cout << prompt;
 
 	while (true) {
-		char response = AwaitCharInputInline(prompt);
+		char response = awaitCharInputInline(prompt);
 
 		if (response == 'L') {
 			return true;
@@ -650,7 +619,7 @@ bool PlayerTerminal::startSequence(const std::string& playerName, const std::str
 }
 
 std::string PlayerTerminal::registryLookup() {
-	ClearTerminal();
+	clearTerminal();
 
 	//HEAD
 	std::cout << std::setw(54) << std::setfill('=') << "" << std::endl;
@@ -665,39 +634,25 @@ std::string PlayerTerminal::registryLookup() {
 	std::cout << "||" << std::setw(52) << std::setfill('-') << "||" << std::endl;
 
 
-	PrintBars();
-	PrintBars();
+	printBars();
+	printBars();
 
 	std::cout << "||";
 	printCenteredLine("Vessel Name: [--------------------]");
 	std::cout << "||" << std::endl;
 
-	PrintBars();
-	PrintBars();
+	printBars();
+	printBars();
 	std::cout << std::setw(54) << std::setfill('=') << "" << std::endl;
 
 	//align input location
 	goUpXLines(4);
 	goRightXChars(23);
 
-	std::string input = AwaitStrInput("");
+	std::string input = awaitStrInput("");
 
 	if (input.size() > 20) {
 		input.resize(20);
-	}
-
-	if (input.size() < 4) {
-		input += ".txt";
-	}
-
-	if (input.substr(input.length() - 4) != ".txt") {
-		if (input.size() <= 16) {
-			input += ".txt";
-		}
-		else {
-			input.resize(input.size() - 4);
-			input += ".txt";
-		}
 	}
 
 	std::string tempPrint = input;
@@ -718,4 +673,3 @@ std::string PlayerTerminal::registryLookup() {
 
 	return input;
 }
-

@@ -9,7 +9,7 @@
 #include "GameManager.hpp"
 
 GameManager::GameManager() { 
-	UI.BootSequence();
+	UI.bootSequence();
 	std::cout << "Establishing Handshake with Space Command..." << std::endl;
 	ExternalManager.loadSettings(eventsFile, leaderboardFile);
 	UI.sleep(5);
@@ -21,49 +21,49 @@ GameManager::GameManager() {
 	}
 	EventController = EventManager(eventsFile);
 	EventController.saturatePools();
-	MenuRunner();
+	menuRunner();
 }
 
-void GameManager::MenuRunner() {
+void GameManager::menuRunner() {
 	char mainMenuDirective = 'a';
-	UI.PrintMainMenu();
+	UI.printMainMenu();
 
 	while (true) {
-		char playerChoice = UI.AwaitCharInputSeperate("SEC-OS:// INPUT DIRECTIVE > ", "[!] INVALID COMMAND. RE-INDEXING...");
+		char playerChoice = UI.awaitCharInputSeperate("SEC-OS:// INPUT DIRECTIVE > ", "[!] INVALID COMMAND. RE-INDEXING...");
 		bool validInput = false;
 
 		switch (playerChoice) {
 		case '1':
-			NewGame();
-			UI.ClearTerminal();
-			UI.PrintMainMenu();
+			newGame();
+			UI.clearTerminal();
+			UI.printMainMenu();
 			break;
 		case '2':
-			LoadGame();
-			UI.ClearTerminal();
-			UI.PrintMainMenu();
+			loadGame();
+			UI.clearTerminal();
+			UI.printMainMenu();
 			break;
 		case '3':
-			LoadLeaderboard();
-			UI.ClearTerminal();
-			UI.PrintMainMenu();
+			loadLeaderboard();
+			UI.clearTerminal();
+			UI.printMainMenu();
 			break;
 		case '4':
-			SettingsChanger();
-			UI.ClearTerminal();
-			UI.PrintMainMenu();
+			settingsChanger();
+			UI.clearTerminal();
+			UI.printMainMenu();
 			break;
 		case '5':
 			//End game
 			return;
 		default:
-			UI.SleepUpdateIncorrectInput("SEC-OS:// INPUT DIRECTIVE > ", "[!] INVALID COMMAND. RE-INDEXING...");
+			UI.sleepUpdateIncorrectInput("SEC-OS:// INPUT DIRECTIVE > ", "[!] INVALID COMMAND. RE-INDEXING...");
 			break;
 		}
 	}
 }
 
-void GameManager::LoadGame() {
+void GameManager::loadGame() {
 	std::string vesselName = UI.registryLookup();
 	std::string saveFile = "save" + ExternalManager.sanitizeFileName(vesselName);
 
@@ -107,12 +107,12 @@ void GameManager::LoadGame() {
 void GameManager::gameLoop() {
 	while (true) {
 		Event currentEvent = EventController.getRandomEvent();
-		UI.PrintEvent(currentEvent, StatisticsManager.getPlayerName());
+		UI.printEvent(currentEvent, StatisticsManager.getPlayerName());
 		char response = 'a';
 
 
 		while (response!='Q') {
-			response = UI.AwaitCharInputInline("Your Command, Captain ");
+			response = UI.awaitCharInputInline("Your Command, Captain ");
 			bool valid = processEventResponse(response, currentEvent);
 
 			if (response == 'R') { // not valid automatically
@@ -120,7 +120,7 @@ void GameManager::gameLoop() {
 			}
 
 			if (!valid) {
-				UI.PrintEvent(currentEvent, StatisticsManager.getPlayerName());
+				UI.printEvent(currentEvent, StatisticsManager.getPlayerName());
 				continue;
 			}
 			else {
@@ -180,7 +180,7 @@ void GameManager::gameLoop() {
 	UI.printDeath((numZeroResources == 1) ? resourceIndex : 4);
 	std::cout << "Goodbye, Captian...";
 	UI.sleep(3);
-	UI.ClearTerminal();
+	UI.clearTerminal();
 	UI.sleep(4);
 
 	std::string file = ExternalManager.sanitizeFileName(StatisticsManager.getVesselName());
@@ -298,13 +298,13 @@ bool GameManager::processEventResponse(const char& response, Event& event) {
 	return true;
 }
 
-void GameManager::NewGame() {
+void GameManager::newGame() {
 	StatisticsManager.setGameSeed(time(0));
 	StatisticsManager.processSeed();
 
 	std::string vesselName;
 	std::string playerName;
-	UI.NewGameInputSequence(playerName, vesselName);
+	UI.newGameInputSequence(playerName, vesselName);
 
 	vesselName = trimTrailing(vesselName);
 	playerName = trimTrailing(playerName);
@@ -329,47 +329,47 @@ void GameManager::checkSettings() {
 	poisonedSettings = !(ExternalStateManager::checkFileExists(eventsFile) && ExternalStateManager::checkFileExists(leaderboardFile));
 }
 
-void GameManager::LoadLeaderboard() {
+void GameManager::loadLeaderboard() {
 	leaderboardData = ExternalManager.loadLeaderboard(leaderboardFile);
 	int pageCount = leaderboardData.size() / 10;
 	pageCount = leaderboardData.size() % 10 == 0 ? pageCount : pageCount + 1;
 	int currentPage = 1;
 	
-	UI.LeaderboardSequence(leaderboardData, currentPage, pageCount);
+	UI.leaderboardSequence(leaderboardData, currentPage, pageCount);
 	
 
-	char input = UI.AwaitCharInputSeperate("SEC-OS://RECORDS/CMD > ", "[!] INVALID COMMAND. RE-INDEXING...");
+	char input = UI.awaitCharInputSeperate("SEC-OS://RECORDS/CMD > ", "[!] INVALID COMMAND. RE-INDEXING...");
 	while (input != 'Q') {
 		if (input == 'N') {
 			currentPage++;
 			if (currentPage > pageCount) {
-				UI.SleepUpdateIncorrectInput("SEC-OS://RECORDS/CMD > ", "[!] MAXIMUM INDEX REACHED. CANNOT ADVANCE");
+				UI.sleepUpdateIncorrectInput("SEC-OS://RECORDS/CMD > ", "[!] MAXIMUM INDEX REACHED. CANNOT ADVANCE");
 				currentPage--;
 			}
 			else {
-				UI.ClearTerminal();
-				UI.LeaderboardSequence(leaderboardData, currentPage, pageCount);
+				UI.clearTerminal();
+				UI.leaderboardSequence(leaderboardData, currentPage, pageCount);
 			}
 		}
 		else if (input == 'P') {
 			currentPage--;
 			if (currentPage < 1) {
-				UI.SleepUpdateIncorrectInput("SEC-OS://RECORDS/CMD > ", "[!] MINIMUM INDEX REACHED. CANNOT DE-INDEX");
+				UI.sleepUpdateIncorrectInput("SEC-OS://RECORDS/CMD > ", "[!] MINIMUM INDEX REACHED. CANNOT DE-INDEX");
 				currentPage++;
 			}
 			else {
-				UI.ClearTerminal();
-				UI.LeaderboardSequence(leaderboardData, currentPage, pageCount);
+				UI.clearTerminal();
+				UI.leaderboardSequence(leaderboardData, currentPage, pageCount);
 			}
 		}
-		input = UI.AwaitCharInputSeperate("SEC-OS://RECORDS/CMD > ", "[!] INVALID COMMAND. RE-INDEXING...");
+		input = UI.awaitCharInputSeperate("SEC-OS://RECORDS/CMD > ", "[!] INVALID COMMAND. RE-INDEXING...");
 	}
 	
 	return;
 }
 
-void GameManager::SettingsChanger() {
-	UI.SettingsSequence(eventsFile, leaderboardFile);
+void GameManager::settingsChanger() {
+	UI.settingsSequence(eventsFile, leaderboardFile);
 	ExternalManager.writeSettignsFile(eventsFile, leaderboardFile);
 }
 

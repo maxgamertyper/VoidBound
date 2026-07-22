@@ -6,9 +6,10 @@
 
 
 int main() {
-	GameManager();
+	GameManager orchestrator = GameManager();
 }
 
 //Finish up:
 //Refactor PlayerTerminal
+// make a sanitize function for char input
 //ensure it meets class standards
