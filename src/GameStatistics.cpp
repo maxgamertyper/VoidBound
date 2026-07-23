@@ -1,5 +1,12 @@
-#include "GameStatistics.hpp"
-#include "ExternalStateManager.hpp"
+/*
+Max A. Allen
+Void Bound
+A Sci-Fi terminal game aiming to provide a more dynamic experience by
+using relationships to determine a middle-ground event
+*/
+
+#include "GameStatistics.h"
+#include "ExternalStateManager.h"
 
 int GameStatistics::checkReltaionshipUltimatum() {
 	for (int i = 0; i < 4; ++i) {
@@ -36,7 +43,7 @@ SaveData GameStatistics::toSaveGame() {
 	me.playerName = playerName;
 	me.vesselName = vesselName;
 	me.currentDay = currentDay;
-	
+
 	me.gameSeed = gameSeed;
 
 	for (int i = 0; i < 4; i++) {

@@ -1,4 +1,11 @@
-#include "GameManager.hpp"
+/*
+Max A. Allen
+Void Bound
+A Sci-Fi terminal game aiming to provide a more dynamic experience by
+using relationships to determine a middle-ground event
+*/
+
+#include "GameManager.h"
 
 #include <cstdlib>
 #include <ctime>
@@ -10,6 +17,4 @@ int main() {
 }
 
 //Finish up:
-//Refactor PlayerTerminal
-// make a sanitize function for char input
 //ensure it meets class standards

@@ -1,245 +1,259 @@
+/*
+Max A. Allen
+Void Bound
+A Sci-Fi terminal game aiming to provide a more dynamic experience by
+using relationships to determine a middle-ground event
+*/
+
 
 #include <string>
 #include <ctime>
 #include <iostream>
 #include <format>
-#include "EventManager.hpp"
-#include "GameStatistics.hpp"
-#include "PlayerTerminal.hpp"
-#include "GameManager.hpp"
+#include "EventManager.h"
+#include "GameStatistics.h"
+#include "PlayerTerminal.h"
+#include "GameManager.h"
 
-GameManager::GameManager() { 
-	UI.bootSequence();
+GameManager::GameManager() {
+	userInterface.bootSequence();
 	std::cout << "Establishing Handshake with Space Command..." << std::endl;
-	ExternalManager.loadSettings(eventsFile, leaderboardFile);
-	UI.sleep(5);
+	externalManager.loadSettings(eventsFile, leaderboardFile);
+	userInterface.sleep(5);
 	checkSettings();
 
 
 	if (poisonedSettings) {
 		return;
 	}
-	EventController = EventManager(eventsFile);
-	EventController.saturatePools();
+	eventController = EventManager(eventsFile);
+	eventController.saturatePools();
 	menuRunner();
 }
 
 void GameManager::menuRunner() {
 	char mainMenuDirective = 'a';
-	UI.printMainMenu();
+	userInterface.printMainMenu();
+	std::vector<char> validOptions = { '1', '2', '3', '4', '5' };
 
 	while (true) {
-		char playerChoice = UI.awaitCharInputSeperate("SEC-OS:// INPUT DIRECTIVE > ", "[!] INVALID COMMAND. RE-INDEXING...");
-		bool validInput = false;
+		int playerChoiceIndex = userInterface.awaitValidCharInput(
+			validOptions, 
+			"SEC-OS:// INPUT DIRECTIVE > ", 
+			"[!] INVALID COMMAND. RE-INDEXING..."
+		);
 
-		switch (playerChoice) {
-		case '1':
+		switch (playerChoiceIndex) {
+		case 0:
 			newGame();
-			UI.clearTerminal();
-			UI.printMainMenu();
+			userInterface.clearTerminal();
+			userInterface.printMainMenu();
 			break;
-		case '2':
+		case 1:
 			loadGame();
-			UI.clearTerminal();
-			UI.printMainMenu();
+			userInterface.clearTerminal();
+			userInterface.printMainMenu();
 			break;
-		case '3':
+		case 2:
 			loadLeaderboard();
-			UI.clearTerminal();
-			UI.printMainMenu();
+			userInterface.clearTerminal();
+			userInterface.printMainMenu();
 			break;
-		case '4':
+		case 3:
 			settingsChanger();
-			UI.clearTerminal();
-			UI.printMainMenu();
+			userInterface.clearTerminal();
+			userInterface.printMainMenu();
 			break;
-		case '5':
+		case 4:
 			//End game
 			return;
-		default:
-			UI.sleepUpdateIncorrectInput("SEC-OS:// INPUT DIRECTIVE > ", "[!] INVALID COMMAND. RE-INDEXING...");
+		default: // should never happen
 			break;
 		}
 	}
 }
 
 void GameManager::loadGame() {
-	std::string vesselName = UI.registryLookup();
-	std::string saveFile = "save" + ExternalManager.sanitizeFileName(vesselName);
+	std::string vesselName = userInterface.registryLookup();
+	std::string saveFile = "save" + externalManager.sanitizeFileName(vesselName) + ".txt";
 
 	SaveData thisSaveFile;
-	bool successfulLoad = ExternalManager.loadSaveFile(saveFile, thisSaveFile);
+	bool successfulLoad = externalManager.loadSaveFile(saveFile, thisSaveFile);
 
-	if (!successfulLoad || !ExternalManager.checkSaveGame(thisSaveFile)) {
+	if (!successfulLoad || !externalManager.checkSaveGame(thisSaveFile)) {
 		std::cout << "Critical: save file has invalid format or does not exist!";
-		UI.sleep(3);
+		userInterface.sleep(3);
 		return;
 	}
 
-	StatisticsManager.setGameSeed(thisSaveFile.gameSeed);
-	StatisticsManager.processSeed();
+	statisticsManager.setGameSeed(thisSaveFile.gameSeed);
+	statisticsManager.processSeed();
 
-	StatisticsManager.setPlayerName(thisSaveFile.playerName);
-	StatisticsManager.setVesselName(thisSaveFile.vesselName);
-	StatisticsManager.setCurrentDay(thisSaveFile.currentDay);
+	statisticsManager.setPlayerName(thisSaveFile.playerName);
+	statisticsManager.setVesselName(thisSaveFile.vesselName);
+	statisticsManager.setCurrentDay(thisSaveFile.currentDay);
 
 	for (int i = 0; i < 4; i++) {
-		StatisticsManager.setResource(i,thisSaveFile.resources[i]);
-		StatisticsManager.setRelationship(i, thisSaveFile.relationships[i]);
+		statisticsManager.setResource(i, thisSaveFile.resources[i]);
+		statisticsManager.setRelationship(i, thisSaveFile.relationships[i]);
 	}
 
-	bool continueSave = UI.welcomeBackSequence(
-		StatisticsManager.getPlayerName(), 
-		StatisticsManager.getVesselName()
+	bool continueSave = userInterface.welcomeBackSequence(
+		statisticsManager.getPlayerName(),
+		statisticsManager.getVesselName()
 	);
 
 	if (!continueSave) {
 		std::cout << "Space Command: sending rescue response!";
-		ExternalManager.deleteFile(saveFile);
+		externalManager.deleteFile(saveFile);
 		return;
 	}
 
-	UI.sleep(5);
+	userInterface.sleep(5);
 
 	gameLoop();
 }
 
 void GameManager::gameLoop() {
 	while (true) {
-		Event currentEvent = EventController.getRandomEvent();
-		UI.printEvent(currentEvent, StatisticsManager.getPlayerName());
-		char response = 'a';
+		Event currentEvent = eventController.getRandomEvent();
+		userInterface.printEvent(currentEvent, statisticsManager.getPlayerName());
+
+		std::vector<char> validOptions = { 'Q', 'R', 'Y', 'N', 'C' };
+		int responseIndex = -1;
 
 
-		while (response!='Q') {
-			response = UI.awaitCharInputInline("Your Command, Captain ");
-			bool valid = processEventResponse(response, currentEvent);
+		while (responseIndex != 0) {
+			responseIndex = userInterface.awaitValidCharInput(
+				validOptions, 
+				"Your Command, Captain: ", 
+				"Captain, I'm not sure what that command means..."
+			);
+			bool valid = processEventResponse(
+				validOptions.at(responseIndex),
+				currentEvent
+			);
 
-			if (response == 'R') { // not valid automatically
-				UI.printResources(StatisticsManager.getResources());
-			}
-
-			if (!valid) {
-				UI.printEvent(currentEvent, StatisticsManager.getPlayerName());
-				continue;
-			}
-			else {
-				break;
+			if (responseIndex == 1) { // not valid automatically
+				userInterface.printResources(statisticsManager.getResources());
+				userInterface.printEvent(currentEvent, statisticsManager.getPlayerName());
 			}
 		}
 
-		SaveData currentGame = StatisticsManager.toSaveGame();
-		
+		SaveData currentGame = statisticsManager.toSaveGame();
+
 		for (int i = 0; i < 5; i++) {
-			currentGame.previousEvents[i] = EventController.getPreviousEventHeader(i);
+			currentGame.previousEvents[i] = eventController.getPreviousEventHeader(i);
 		}
-		
-		ExternalManager.saveGame(currentGame);
 
-		if (StatisticsManager.checkDefeat()) {
+		externalManager.saveGame(currentGame);
+
+		if (statisticsManager.checkDefeat()) {
 			break;
 		}
-		
-		if (response == 'Q') {
+
+		if (responseIndex == 0) {
 			return;
 		}
 
 		if (rand() % 2 == 1) {
-			StatisticsManager.progressDay();
+			statisticsManager.progressDay();
 			std::cout << "Survived the Day! resources used for survival: {-1 Oxygen, -1 Water, -1 Food}";
 		}
-		
-		UI.sleep(2);
+
+		userInterface.sleep(2);
 	}
 
-	ExternalManager.addLeaderboardEntry(leaderboardFile,
-		StatisticsManager.getPlayerName(),
-		StatisticsManager.getVesselName(),
-		StatisticsManager.getCurrentDay()
+	externalManager.addLeaderboardEntry(leaderboardFile,
+		statisticsManager.getPlayerName(),
+		statisticsManager.getVesselName(),
+		statisticsManager.getCurrentDay()
 	);
 
 	int numZeroResources = 0;
 	int resourceIndex = -1;
-	if (StatisticsManager.getResource(0)<=0) {
+	if (statisticsManager.getResource(0) <= 0) {
 		numZeroResources++;
 		resourceIndex = 0;
-	} 
-	if (StatisticsManager.getResource(1) <= 0) {
+	}
+	if (statisticsManager.getResource(1) <= 0) {
 		numZeroResources++;
 		resourceIndex = 1;
 	}
-	if (StatisticsManager.getResource(2) <= 0) {
+	if (statisticsManager.getResource(2) <= 0) {
 		numZeroResources++;
 		resourceIndex = 2;
 	}
-	if (StatisticsManager.getResource(3) <= 0) {
+	if (statisticsManager.getResource(3) <= 0) {
 		numZeroResources++;
 		resourceIndex = 3;
 	}
 
-	UI.printDeath((numZeroResources == 1) ? resourceIndex : 4);
+	userInterface.printDeath((numZeroResources == 1) ? resourceIndex : 4);
 	std::cout << "Goodbye, Captian...";
-	UI.sleep(3);
-	UI.clearTerminal();
-	UI.sleep(4);
+	userInterface.sleep(3);
+	userInterface.clearTerminal();
+	userInterface.sleep(4);
 
-	std::string file = ExternalManager.sanitizeFileName(StatisticsManager.getVesselName());
-	ExternalManager.deleteFile("save"+file);
+	std::string file = externalManager.sanitizeFileName(
+		statisticsManager.getVesselName()
+	);
+	externalManager.deleteFile("save" + file);
 }
 
 bool GameManager::processEventResponse(const char& response, Event& event) {
 	double* changingResourceArray = nullptr;
 	double* changingRelationshipArray = nullptr;
-	std::string NPCResponse;
+	std::string npcResponse;
 
-	double counterResourceArray[4] = {0};
-	double counterRelationshipArray[4] = {0};
+	double counterResourceArray[4] = { 0 };
+	double counterRelationshipArray[4] = { 0 };
 
 
 	if (response == 'Y') {
 		changingRelationshipArray = event.acceptRelationships;
 		changingResourceArray = event.acceptResources;
-		NPCResponse = event.acceptResponse;
+		npcResponse = event.acceptResponse;
 	}
 	else if (response == 'N') {
 		changingRelationshipArray = event.denyRelationships;
 		changingResourceArray = event.denyResources;
-		NPCResponse = event.denyResponse;
+		npcResponse = event.denyResponse;
 	}
 	else if (response == 'C') {
-		int NPCindex;
+		int npcIndex;
 		changingRelationshipArray = counterRelationshipArray;
 		changingResourceArray = counterResourceArray;
 
-		if (event.NPC == "Vance {Combat Warden}") {
-			NPCindex = 3;
+		if (event.npc == "Vance {Combat Warden}") {
+			npcIndex = 3;
 		}
-		else if (event.NPC == "Alisa {Exploration Master}") {
-			NPCindex = 2;
+		else if (event.npc == "Alisa {Exploration Master}") {
+			npcIndex = 2;
 		}
-		else if (event.NPC == "Malik {Military Pilot}") {
-			NPCindex = 1;
+		else if (event.npc == "Malik {Military Pilot}") {
+			npcIndex = 1;
 		}
-		else if (event.NPC == "Carrie {Aeronautics Engineer}") {
-			NPCindex = 0;
+		else if (event.npc == "Carrie {Aeronautics Engineer}") {
+			npcIndex = 0;
 		}
 		else {
-			NPCindex = 0;
-			std::cout << "Alert: error with event, NPC unknown. Defaulting to Engineer" << std::endl;
-			UI.sleep(2);
+			npcIndex = 0;
+			std::cout << "Alert: error with event, npc unknown. Defaulting to Engineer" << std::endl;
+			userInterface.sleep(2);
 		}
 
-		int npcRelation = StatisticsManager.getRelationship(NPCindex);
+		int npcRelation = statisticsManager.getRelationship(npcIndex);
 		int npcFactor = npcRelation / 50.0;
 
 		if (npcFactor < .7) {
-			NPCResponse = event.counterNegativeResponse;
+			npcResponse = event.counterNegativeResponse;
 		}
 		else if (npcFactor < 1.35) {
-			NPCResponse = event.counterNeutralResponse;
+			npcResponse = event.counterNeutralResponse;
 		}
 		else {
-			NPCResponse = event.counterPositiveResponse;
+			npcResponse = event.counterPositiveResponse;
 		}
 
 		for (int i = 0; i < 4; i++) {
@@ -258,119 +272,143 @@ bool GameManager::processEventResponse(const char& response, Event& event) {
 		std::cout << "Middle-Ground Results: {";
 	}
 	for (int i = 0; i < 4; i++) {
-		double relationship = StatisticsManager.getRelationship(i);
-		double resource = StatisticsManager.getResource(i);
+		double relationship = statisticsManager.getRelationship(i);
+		double resource = statisticsManager.getResource(i);
 
 		double relationshipTotal = relationship + changingRelationshipArray[i];
 		double resourceTotal = resource + changingResourceArray[i];
 
 
-		StatisticsManager.setRelationship(i, relationshipTotal);
-		StatisticsManager.setResource(i, resourceTotal);
+		statisticsManager.setRelationship(i, relationshipTotal);
+		statisticsManager.setResource(i, resourceTotal);
 
 		if (response == 'C') {
 			switch (i) {
-				case 0:
-					std::cout << std::format("{:.2f}", changingResourceArray[i]) << " Oxygen, ";
-					break;
-				case 1:
-					std::cout << std::format("{:.2f}", changingResourceArray[i]) << " Water, ";
-					break;
-				case 2:
-					std::cout << std::format("{:.2f}", changingResourceArray[i]) << " Food, ";
-					break;
-				case 3:
-					std::cout << std::format("{:.2f}", changingResourceArray[i]) << " Scrap}";
-					break;
-				default:
-					break;
+			case 0:
+				std::cout << userInterface.formatDouble(changingResourceArray[i]) << " Oxygen, ";
+				break;
+			case 1:
+				std::cout << userInterface.formatDouble(changingResourceArray[i]) << " Water, ";
+				break;
+			case 2:
+				std::cout << userInterface.formatDouble(changingResourceArray[i]) << " Food, ";
+				break;
+			case 3:
+				std::cout << userInterface.formatDouble(changingResourceArray[i]) << " Scrap}";
+				break;
+			default:
+				break;
 
 			}
-				
+
 		}
 	}
-	UI.sleep(2);
-	
+	userInterface.sleep(2);
 
-	UI.printResponse(NPCResponse, event.NPC);
-	UI.sleep(3);
+
+	userInterface.printResponse(npcResponse, event.npc);
+	userInterface.sleep(3);
 
 	return true;
 }
 
 void GameManager::newGame() {
-	StatisticsManager.setGameSeed(time(0));
-	StatisticsManager.processSeed();
+	statisticsManager.setGameSeed(time(0));
+	statisticsManager.processSeed();
 
 	std::string vesselName;
 	std::string playerName;
-	UI.newGameInputSequence(playerName, vesselName);
+	userInterface.newGameInputSequence(playerName, vesselName);
 
 	vesselName = trimTrailing(vesselName);
 	playerName = trimTrailing(playerName);
 
-	
-	StatisticsManager.setVesselName(vesselName);
-	StatisticsManager.setPlayerName(playerName);
-	StatisticsManager.setDefaults();
 
-	bool newGame = UI.startSequence(playerName, vesselName);
+	statisticsManager.setVesselName(vesselName);
+	statisticsManager.setPlayerName(playerName);
+	statisticsManager.setDefaults();
+
+	bool newGame = userInterface.startSequence(playerName, vesselName);
 
 	if (!newGame) {
 		return;
 	}
-	
-	UI.sleep(5);
+
+	userInterface.sleep(5);
 
 	gameLoop();
 }
 
 void GameManager::checkSettings() {
-	poisonedSettings = !(ExternalStateManager::checkFileExists(eventsFile) && ExternalStateManager::checkFileExists(leaderboardFile));
+	poisonedSettings = !(ExternalStateManager::checkFileExists(eventsFile) 
+		&& ExternalStateManager::checkFileExists(leaderboardFile));
 }
 
 void GameManager::loadLeaderboard() {
-	leaderboardData = ExternalManager.loadLeaderboard(leaderboardFile);
+	leaderboardData = externalManager.loadLeaderboard(leaderboardFile);
 	int pageCount = leaderboardData.size() / 10;
 	pageCount = leaderboardData.size() % 10 == 0 ? pageCount : pageCount + 1;
 	int currentPage = 1;
-	
-	UI.leaderboardSequence(leaderboardData, currentPage, pageCount);
-	
 
-	char input = UI.awaitCharInputSeperate("SEC-OS://RECORDS/CMD > ", "[!] INVALID COMMAND. RE-INDEXING...");
-	while (input != 'Q') {
-		if (input == 'N') {
+	userInterface.leaderboardSequence(leaderboardData, currentPage, pageCount);
+
+
+	std::vector<char> validOptions = { 'Q', 'N', 'P' };
+	int validIndex = userInterface.awaitValidCharInput(
+		validOptions, 
+		"SEC-OS://RECORDS/CMD > ", 
+		"[!] INVALID COMMAND. RE-INDEXING..."
+	);
+
+	while (validIndex != 0) { // Q
+		if (validIndex == 1) { // N
 			currentPage++;
 			if (currentPage > pageCount) {
-				UI.sleepUpdateIncorrectInput("SEC-OS://RECORDS/CMD > ", "[!] MAXIMUM INDEX REACHED. CANNOT ADVANCE");
+				userInterface.sleepUpdateIncorrectInput(
+					"SEC-OS://RECORDS/CMD > ", 
+					"[!] MAXIMUM INDEX REACHED. CANNOT ADVANCE"
+				);
 				currentPage--;
 			}
 			else {
-				UI.clearTerminal();
-				UI.leaderboardSequence(leaderboardData, currentPage, pageCount);
+				userInterface.clearTerminal();
+				userInterface.leaderboardSequence(
+					leaderboardData, 
+					currentPage, 
+					pageCount
+				);
 			}
 		}
-		else if (input == 'P') {
+		else if (validIndex == 2) { // P
 			currentPage--;
 			if (currentPage < 1) {
-				UI.sleepUpdateIncorrectInput("SEC-OS://RECORDS/CMD > ", "[!] MINIMUM INDEX REACHED. CANNOT DE-INDEX");
+				userInterface.sleepUpdateIncorrectInput(
+					"SEC-OS://RECORDS/CMD > ", 
+					"[!] MINIMUM INDEX REACHED. CANNOT DE-INDEX"
+				);
 				currentPage++;
 			}
 			else {
-				UI.clearTerminal();
-				UI.leaderboardSequence(leaderboardData, currentPage, pageCount);
+				userInterface.clearTerminal();
+				userInterface.leaderboardSequence(
+					leaderboardData, 
+					currentPage, 
+					pageCount
+				);
 			}
 		}
-		input = UI.awaitCharInputSeperate("SEC-OS://RECORDS/CMD > ", "[!] INVALID COMMAND. RE-INDEXING...");
+		validIndex = userInterface.awaitValidCharInput(
+			validOptions, 
+			"SEC-OS://RECORDS/CMD > ", 
+			"[!] INVALID COMMAND. RE-INDEXING..."
+		);
 	}
-	
 	return;
 }
 
 void GameManager::settingsChanger() {
-	UI.settingsSequence(eventsFile, leaderboardFile);
-	ExternalManager.writeSettignsFile(eventsFile, leaderboardFile);
+	userInterface.settingsSequence(eventsFile, leaderboardFile);
+	externalManager.writeSettignsFile(eventsFile, leaderboardFile);
 }
 
 std::string GameManager::trimTrailing(std::string str) {

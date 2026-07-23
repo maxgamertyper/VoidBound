@@ -1,4 +1,11 @@
-#include "ExternalStateManager.hpp"
+/*
+Max A. Allen
+Void Bound
+A Sci-Fi terminal game aiming to provide a more dynamic experience by
+using relationships to determine a middle-ground event
+*/
+
+#include "ExternalStateManager.h"
 
 #include <fstream>
 #include <string>
@@ -64,12 +71,16 @@ void ExternalStateManager::loadSettings(std::string& eventFile, std::string& lea
 	std::getline(settingsLoader >> std::ws, leaderboardFile);
 
 	if (!checkFileExists(eventFile)) {
-		std::cout << "> Error: Could not find EventFile: '" << eventFile << "', falling back" << std::endl;
+		std::cout << "> Error: Could not find EventFile: '" << 
+			eventFile << "', falling back" << std::endl;
+		
 		eventFile = "newEvents.txt";
 		checkDefault(eventFile, true);
 	}
 	if (!checkFileExists(leaderboardFile)) {
-		std::cout << "> Error: Could not find leaderboardFile: '" << leaderboardFile << "', falling back" << std::endl;
+		std::cout << "> Error: Could not find leaderboardFile: '" << 
+			leaderboardFile << "', falling back" << std::endl;
+		
 		leaderboardFile = "leaderboard.txt";
 		checkDefault(leaderboardFile, false);
 	}
@@ -80,7 +91,9 @@ bool ExternalStateManager::checkFileExists(const std::string& fileName) {
 }
 
 bool ExternalStateManager::checkEntry(const LeaderboardEntry& entry) {
-	return entry.score != -1 && !entry.playerName.empty() && !entry.vehicleName.empty();
+	return entry.score != -1 && 
+		!entry.playerName.empty() && 
+		!entry.vehicleName.empty();
 }
 
 std::vector<LeaderboardEntry> ExternalStateManager::loadLeaderboard(const std::string& leaderboardFileName) {
@@ -103,22 +116,23 @@ std::vector<LeaderboardEntry> ExternalStateManager::loadLeaderboard(const std::s
 
 		LeaderboardEntry thisEntry;
 
-		std::string Temp;
-		std::getline(streamedEntry >> std::ws, Temp, '|'); // the score 
+		std::string holderString;
+		std::getline(streamedEntry >> std::ws, holderString, '|'); // the score 
 
-		thisEntry.score = std::stoi(Temp);
+		thisEntry.score = std::stoi(holderString);
 
-		std::getline(streamedEntry >> std::ws, Temp, '|'); // the Player Name 
-		thisEntry.playerName = Temp;
+		std::getline(streamedEntry >> std::ws, holderString, '|'); // the Player Name 
+		thisEntry.playerName = holderString;
 
-		std::getline(streamedEntry >> std::ws, Temp); // the Vehicle Name
-		thisEntry.vehicleName = Temp;
+		std::getline(streamedEntry >> std::ws, holderString); // the Vehicle Name
+		thisEntry.vehicleName = holderString;
 
 		if (checkEntry(thisEntry)) {
 			returnHolder.push_back(thisEntry);
 		}
 		else {
-			std::cout << "> Error: malformed leaderboard input: '" << unformattedEntry << "', skipping" << std::endl;
+			std::cout << "> Error: malformed leaderboard input: '" << 
+				unformattedEntry << "', skipping" << std::endl;
 		}
 	}
 
@@ -127,9 +141,14 @@ std::vector<LeaderboardEntry> ExternalStateManager::loadLeaderboard(const std::s
 }
 
 void ExternalStateManager::sortLeaderboardEntries(std::vector<LeaderboardEntry>& entries) {
-	std::sort(entries.begin(), entries.end(), [](const LeaderboardEntry& a, const LeaderboardEntry& b) {
+	std::sort(
+		entries.begin(), 
+		entries.end(), 
+		// lambda (known from python and java, just had to lookup how)
+		[](const LeaderboardEntry& a, const LeaderboardEntry& b) { 
 		return a.score > b.score;
-	});
+		}
+	);
 }
 
 void ExternalStateManager::writeSettignsFile(std::string& eventsFile, std::string& leaderboardFile) {
@@ -252,7 +271,7 @@ void ExternalStateManager::setSaveDataByKey(SaveData& data, const std::string& k
 		std::getline(valueStream >> std::ws, temporary);
 		targetArray[3] = std::stoi(temporary);
 
-	} 
+	}
 }
 
 bool ExternalStateManager::checkSaveGame(const SaveData& data) {
@@ -295,7 +314,8 @@ void ExternalStateManager::addLeaderboardEntry(const std::string& leaderboard, c
 	std::ofstream leaderboardFile(leaderboard, std::ios::app);
 
 	if (!leaderboardFile.is_open()) {
-		std::cout << "Error: Could not open leaderboard " << leaderboard << " for appending!" << std::endl;
+		std::cout << "Error: Could not open leaderboard " << 
+			leaderboard << " for appending!" << std::endl;
 	}
 
 	leaderboardFile <<
@@ -313,7 +333,8 @@ void ExternalStateManager::saveGame(const SaveData& data) {
 	std::ofstream saveFile(saveFileName);
 
 	if (!saveFile.is_open()) {
-		std::cout << "Error: Could not open saveFile " << saveFileName << " for saving!" << std::endl;
+		std::cout << "Error: Could not open saveFile " << 
+			saveFileName << " for saving!" << std::endl;
 		return;
 	}
 
