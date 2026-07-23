@@ -35,19 +35,19 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\EventManager.hpp">
+    <ClInclude Include="include\EventManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\ExternalStateManager.hpp">
+    <ClInclude Include="include\ExternalStateManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\GameManager.hpp">
+    <ClInclude Include="include\GameManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\GameStatistics.hpp">
+    <ClInclude Include="include\GameStatistics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\PlayerTerminal.hpp">
+    <ClInclude Include="include\PlayerTerminal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

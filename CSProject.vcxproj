@@ -24,14 +24,16 @@
     <ClCompile Include="src\GameManager.cpp" />
     <ClCompile Include="src\GameStatistics.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\PlayerTerminal.cpp" />
+    <ClCompile Include="src\PlayerTerminal.cpp">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)include</AdditionalIncludeDirectories>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\EventManager.hpp" />
-    <ClInclude Include="include\ExternalStateManager.hpp" />
-    <ClInclude Include="include\GameManager.hpp" />
-    <ClInclude Include="include\GameStatistics.hpp" />
-    <ClInclude Include="include\PlayerTerminal.hpp" />
+    <ClInclude Include="include\EventManager.h" />
+    <ClInclude Include="include\ExternalStateManager.h" />
+    <ClInclude Include="include\GameManager.h" />
+    <ClInclude Include="include\GameStatistics.h" />
+    <ClInclude Include="include\PlayerTerminal.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
@@ -145,6 +147,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
